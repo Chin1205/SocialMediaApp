@@ -1,75 +1,92 @@
 import React, {useState} from "react";
+import Joi from "joi";
+import { Button, Card, CardActions, CardContent, CardHeader, Grid, TextField } from '@mui/material'
 
-function RegisterForm() {
+const RegisterForm = ({editForm}) => {
 
-    const [name, setName] = useState(null)
-    const [userName, setUserName] = useState(null)
-    const [userEmail, setEmail] = useState(null)
-    const [userPassword, setPassword] = useState(null)
-    const [userConfirmPassword, setConfirmPassword] = useState(null)
+    const [form, setForm] = useState(editForm || {
+        name: '',
+        userName: '',
+        userEmail: '',
+        userPassword: '',
+        userConfirmPassword: '',
+    })
 
-    const handleInputChange = (e) => {
-        const {id, value} = e.target
-        if(id === "name"){
-            setName(value)
-        }
-        if(id === "userName"){
-            setUserName(value)
-        }
-        if(id === "userEmail"){
-            setEmail(value)
-        }
-        if(id === "userPassword"){
-            setPassword(value)
-        }
-        if(id === "userConfirmPassword"){
-            setConfirmPassword(value)
+    const [errors, setErrors] = useState({
+        name: '',
+        userName: '',
+        userEmail: '',
+        userPassword: '',
+        userConfirmPassword: ''
+    })
+
+    const schema = Joi.object({
+        name: Joi.string().min(2).required().label('Name'),
+        userName: Joi.string().min(5).required().label('Username'),
+        userEmail: Joi.string().email({minDomainSegments:2, tlds:{allow:["com", "net", "org"]}}).required().label('Email'),
+        userPassword: Joi.string().min(5).required().label('Password'),
+        userConfirmPassword: Joi.any().equal(Joi.ref('userPassword')).required()
+    })
+
+    const handleInputChange = ({currentTarget:input}) => {
+        setForm({...form, [input.name]:input.value})
+        const {error} = schema.extract(input.name).validate(input.value)
+        if(error) {
+            setErrors({...errors, [input.name]:error.details[0].message})
+        } else {
+            delete errors[input.name]
+            setErrors(errors)
         }
     }
 
-    const handleSubmit = () => {
-        console.log(name, userName, userEmail, userPassword, userConfirmPassword)
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        // onSubmit(form)
+        console.log(form.name, form.userName, form.userEmail, form.userPassword, form.userConfirmPassword)
     }
 
-    return(
-        <div className="form">
-            <h2>Register</h2>
-            <div className="form-body">
-                <div className="form-group">
-                    <label className="form-label">Name</label>
-                    <input className="form-input" type="text" id="name" 
-                        value={name} onChange={(e) => handleInputChange(e)} placeholder="Name"/>
-                </div>
+    const isFormInvalid = () => {
+        const result = schema.validate(form)
+        return !!result.error
+    }
 
-                <div className="form-group">
-                    <label className="form-label">Username</label>
-                    <input className="form-input" type="text" id="userName"
-                        value={userName} onChange={(e) => handleInputChange(e)} placeholder="Username"/>
-                </div>
-
-                <div className="form-group">
-                    <label className="form-label">Email</label>
-                    <input className="form-input" type="email" id="userEmail"
-                        value={userEmail} onChange={(e) => handleInputChange(e)} placeholder="Email"/>
-                </div>
-
-                <div className="form-group">
-                    <label className="form-label">Password</label>
-                    <input className="form-input" type="password" id="userPassword"
-                        value={userPassword} onChange={(e) => handleInputChange(e)} placeholder="Password"/>
-                </div>
-
-                <div className="form-group">
-                    <label className="form-label">Confirm Password</label>
-                    <input className="form-input" type="password" id="userConfirmPassword"
-                        value={userConfirmPassword} onChange={(e) => handleInputChange(e)} placeholder="Confirm Password"/>
-                </div>
-            </div>
-            <div className="form-button">
-                <button className="button" type="submit" onClick={() => handleSubmit()}>Register</button>
-            </div>
-        </div>
+    return( 
+        <Grid container justifyContent={'center'} component={'form'} onSubmit={handleSubmit}>
+            <Grid item xs={6}>
+                <Card>
+                    <CardHeader title="Register" />
+                    <CardContent>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField name='name' 
+                                error={!!errors.name} helperText={errors.name} 
+                                onChange={handleInputChange} value={form.name} label="Name" fullWidth variant='standard' />
+                                
+                                <TextField name='userName' 
+                                error={!!errors.userName} helperText={errors.userName} 
+                                onChange={handleInputChange} value={form.userName} label="Username" fullWidth variant='standard' />
+                                
+                                <TextField name='userEmail' 
+                                error={!!errors.userEmail} helperText={errors.userEmail} 
+                                onChange={handleInputChange} value={form.userEmail} label="Email" fullWidth variant='standard' />
+                                
+                                <TextField name='userPassword' type="password"
+                                error={!!errors.userPassword} helperText={errors.userPassword} 
+                                onChange={handleInputChange} value={form.userPassword} label="Password" fullWidth variant='standard' />
+                                
+                                <TextField name='userConfirmPassword' type="password"
+                                error={!!errors.userConfirmPassword} helperText={errors.userConfirmPassword} 
+                                onChange={handleInputChange} value={form.userConfirmPassword} label="Confirm Password" fullWidth variant='standard' />
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                    <CardActions>
+                        <Button disabled={isFormInvalid()} type={'submit'} fullWidth>Register</Button>
+                    </CardActions>
+                </Card>
+            </Grid>
+        </Grid>
     )
 }
 
-export default RegisterForm;
+export default RegisterForm
