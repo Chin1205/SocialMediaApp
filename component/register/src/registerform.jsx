@@ -1,16 +1,19 @@
 import React, {useState} from "react";
 import Joi from "joi";
 import { Button, Card, CardActions, CardContent, CardHeader, Grid, TextField } from '@mui/material'
+import { useNavigate } from "react-router-dom";
 
-const RegisterForm = ({editForm}) => {
+export default function RegisterForm() {
 
-    const [form, setForm] = useState(editForm || {
+    const [form, setForm] = useState({
         name: '',
         userName: '',
         userEmail: '',
         userPassword: '',
         userConfirmPassword: '',
     })
+    const navigate = useNavigate()
+
 
     const [errors, setErrors] = useState({
         name: '',
@@ -39,10 +42,25 @@ const RegisterForm = ({editForm}) => {
         }
     }
 
-    const handleSubmit = (e) => {
+    async function handleSubmit(e) {
         e.preventDefault()
         // onSubmit(form)
         console.log(form.name, form.userName, form.userEmail, form.userPassword, form.userConfirmPassword)
+        const newUser = { ...form }
+        await fetch("http://localhost:5000/record/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newUser),
+          })
+          .catch(error => {
+            window.alert(error);
+            return;
+          });
+
+          setForm({...form})
+          navigate('/')
     }
 
     const isFormInvalid = () => {
@@ -88,5 +106,3 @@ const RegisterForm = ({editForm}) => {
         </Grid>
     )
 }
-
-export default RegisterForm
