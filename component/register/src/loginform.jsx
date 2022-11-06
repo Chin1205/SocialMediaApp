@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Joi from "joi";
 import { Button, Card, CardActions, CardContent, CardHeader, Grid, TextField } from '@mui/material'
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
 
@@ -9,7 +9,7 @@ function LoginForm() {
         userName: '',
         userPassword: '',
     })
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     const [errors, setErrors] = useState({
         userName: '',
@@ -32,11 +32,21 @@ function LoginForm() {
         }
     }
 
-    const handleSubmit = (e) => {
+    function handleSubmit(e) {
         e.preventDefault()
-        // onSubmit(form)
-        console.log(form.userName, form.userPassword)
-        navigate('/')
+        fetch('http://localhost:5000/admin/')
+            .then(res => {
+                if(!res.ok) {
+                    console.log('error')
+                    return
+                }
+                return res.json()
+            })
+            .then(data => {
+                console.log(data[0].userName)
+                // navigate('/')
+            })
+        
     }
 
     const isFormInvalid = () => {
@@ -63,7 +73,7 @@ function LoginForm() {
                         </Grid>
                     </CardContent>
                     <CardActions>
-                        <Button disabled={isFormInvalid()} type={'submit'} fullWidth>Login</Button>
+                        <Button disabled={(isFormInvalid())} type={'submit'} fullWidth>Login</Button>
                     </CardActions>
                 </Card>
             </Grid>
