@@ -34,7 +34,7 @@ function LoginForm() {
 
     function handleSubmit(e) {
         e.preventDefault()
-        fetch('http://localhost:5000/admin/')
+        fetch(`http://localhost:5000/test/${form.userName}`)
             .then(res => {
                 if(!res.ok) {
                     console.log('error')
@@ -43,10 +43,14 @@ function LoginForm() {
                 return res.json()
             })
             .then(data => {
-                console.log(data[0].userName)
-                // navigate('/')
+                // console.log(data.userName, data.userPassword)
+                if (form.userName !== data.userName || form.userPassword !== data.userPassword) {
+                    window.alert('Username or password is incorrect')      
+                } else {
+                    window.alert('Login successful')
+                    // navigate('/')
+                }
             })
-        
     }
 
     const isFormInvalid = () => {
@@ -62,11 +66,11 @@ function LoginForm() {
                     <CardContent>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                <TextField name='userName' 
+                                <TextField name='userName' id="userName"
                                 error={!!errors.userName} helperText={errors.userName} 
                                 onChange={handleInputChange} value={form.userName} label="Username" fullWidth variant='standard' />
 
-                                <TextField name='userPassword' type="password"
+                                <TextField name='userPassword' type="password" id="userPassword"
                                 error={!!errors.userPassword} helperText={errors.userPassword} 
                                 onChange={handleInputChange} value={form.userPassword} label="Password" fullWidth variant='standard' />
                             </Grid>

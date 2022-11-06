@@ -47,7 +47,7 @@ export default function RegisterForm() {
         // onSubmit(form)
         console.log(form.name, form.userName, form.userEmail, form.userPassword, form.userConfirmPassword)
         const newUser = { ...form }
-        await fetch("http://localhost:5000/admin/add", {
+        await fetch("http://localhost:5000/test/add", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
