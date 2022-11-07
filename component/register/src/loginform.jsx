@@ -44,7 +44,7 @@ function LoginForm() {
             })
             .then(data => {
                 // console.log(data.userName, data.userPassword)
-                if (form.userName !== data.userName || form.userPassword !== data.userPassword) {
+                if (form.userName !== data?.userName || form.userPassword !== data?.userPassword) {
                     window.alert('Username or password is incorrect')      
                 } else {
                     window.alert('Login successful')
@@ -73,6 +73,7 @@ function LoginForm() {
                                 <TextField name='userPassword' type="password" id="userPassword"
                                 error={!!errors.userPassword} helperText={errors.userPassword} 
                                 onChange={handleInputChange} value={form.userPassword} label="Password" fullWidth variant='standard' />
+                                {}
                             </Grid>
                         </Grid>
                     </CardContent>

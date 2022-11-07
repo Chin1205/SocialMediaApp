@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import Joi from "joi";
 import { Button, Card, CardActions, CardContent, CardHeader, Grid, TextField } from '@mui/material'
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
 
@@ -12,7 +12,7 @@ export default function RegisterForm() {
         userPassword: '',
         userConfirmPassword: '',
     })
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
 
     const [errors, setErrors] = useState({
@@ -45,23 +45,53 @@ export default function RegisterForm() {
     async function handleSubmit(e) {
         e.preventDefault()
         // onSubmit(form)
-        console.log(form.name, form.userName, form.userEmail, form.userPassword, form.userConfirmPassword)
+        // console.log(form.name, form.userName, form.userEmail, form.userPassword, form.userConfirmPassword)
         const newUser = { ...form }
-        await fetch("http://localhost:5000/test/add", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newUser),
-          })
-          .catch(error => {
-            window.alert(error);
-            return;
-          });
+        // await fetch("http://localhost:5000/test/add", {
+        //     method: "POST",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify(newUser),
+        //   })
+        //   .catch(error => {
+        //     window.alert(error);
+        //     return;
+        //   })
+
+          fetch(`http://localhost:5000/test/${form.userName}`)
+            .then(res => {
+                if(!res.ok) {
+                    console.log('error')
+                    return
+                }
+                return res.json()
+            })
+            .then(data => {
+                if (form.userName !== data?.userName) {
+                    fetch("http://localhost:5000/test/add", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(newUser),
+                      })
+                      .catch(error => {
+                        window.alert(error);
+                        return;
+                      })
+                      window.alert('Success')
+                      // navigate('/')     
+                } else {
+                    window.alert('Username already exists')                   
+                }
+            })
 
           setForm({...form})
-          navigate('/')
+        //   navigate('/')
     }
+
+
 
     const isFormInvalid = () => {
         const result = schema.validate(form)
