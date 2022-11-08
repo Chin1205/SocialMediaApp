@@ -44,48 +44,34 @@ export default function RegisterForm() {
 
     async function handleSubmit(e) {
         e.preventDefault()
-        // onSubmit(form)
-        // console.log(form.name, form.userName, form.userEmail, form.userPassword, form.userConfirmPassword)
         const newUser = { ...form }
-        // await fetch("http://localhost:5000/test/add", {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify(newUser),
-        //   })
-        //   .catch(error => {
-        //     window.alert(error);
-        //     return;
-        //   })
-
-          fetch(`http://localhost:5000/test/${form.userName}`)
-            .then(res => {
-                if(!res.ok) {
-                    console.log('error')
-                    return
-                }
-                return res.json()
-            })
-            .then(data => {
-                if (form.userName !== data?.userName) {
-                    fetch("http://localhost:5000/test/add", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(newUser),
-                      })
-                      .catch(error => {
-                        window.alert(error);
-                        return;
-                      })
-                      window.alert('Success')
-                      // navigate('/')     
-                } else {
-                    window.alert('Username already exists')                   
-                }
-            })
+        fetch(`http://localhost:5000/test/${form.userName}`)
+          .then(res => {
+              if(!res.ok) {
+                  console.log('error')
+                  return
+              }
+              return res.json()
+          })
+          .then(data => {
+              if (form.userName !== data?.userName) {
+                  fetch("http://localhost:5000/test/add", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify(newUser),
+                    })
+                    .catch(error => {
+                      window.alert(error);
+                      return;
+                    })
+                    window.alert('Success')
+                    // navigate('/')     
+              } else {
+                  window.alert('Username already exists')                   
+              }
+          })
 
           setForm({...form})
         //   navigate('/')
