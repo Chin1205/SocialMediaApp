@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import Joi from "joi";
 import { Button, Card, CardActions, CardContent, CardHeader, Grid, TextField } from '@mui/material'
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
 
@@ -12,7 +12,7 @@ export default function RegisterForm() {
         userPassword: '',
         userConfirmPassword: '',
     })
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
 
 
     const [errors, setErrors] = useState({
@@ -67,14 +67,13 @@ export default function RegisterForm() {
                       return;
                     })
                     window.alert('Success')
-                    // navigate('/')     
+                    navigate('/')     
               } else {
                   window.alert('Username already exists')                   
               }
           })
 
           setForm({...form})
-        //   navigate('/')
     }
 
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Joi from "joi";
 import { Button, Card, CardActions, CardContent, CardHeader, Grid, TextField } from '@mui/material'
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
 
@@ -9,7 +9,7 @@ function LoginForm() {
         userName: '',
         userPassword: '',
     })
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
 
     const [errors, setErrors] = useState({
         userName: '',
@@ -48,7 +48,7 @@ function LoginForm() {
                     window.alert('Username or password is incorrect')      
                 } else {
                     window.alert('Login successful')
-                    // navigate('/')
+                    navigate('/')
                 }
             })
     }
